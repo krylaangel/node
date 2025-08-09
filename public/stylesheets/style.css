@@ -10,7 +10,11 @@ body {
 a {
   color: #0059ff;
 }
-
+.main-page{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 .card {
   background: #fff;
   border-radius: 12px;
