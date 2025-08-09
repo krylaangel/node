@@ -1,0 +1,7 @@
+link(rel='stylesheet', href='/stylesheets/style.css')
+
+li(class="card")
+    h3= user.name
+    p Id: #{user.id}
+    p Вік: #{user.age}
+    a.back-button(href="/users") Повернутись

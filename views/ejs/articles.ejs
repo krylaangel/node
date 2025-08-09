@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Статьи</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    </head>
+<body>
+<h1>Список статей</h1>
+<ul>
+    <% articles.forEach(article => { %>
+        <li class="card">
+            <strong><%= article.title %></strong><br>
+            <a class="back-button" href="/articles/<%= article.id %>">Детальніше</a>
+
+        </li>
+    <% }) %>
+</ul>
+</body>
+</html>

@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    h1 Список користувачів
+    if users.length
+        ul
+            each user in users
+                li(class="card")
+                    strong= user.name
+                    a.back-button(href=`/users/${user.id}`) Детальніше
+    else
+        p Немає користувачів
