@@ -44,3 +44,34 @@ a {
 .back-button:hover {
   background-color: #0099cc;
 }
+.theme{
+  display: flex;
+  gap: 8px;
+}
+body.light {
+  background-color: #fff;
+  color: #000;
+}
+
+body.dark {
+  background-color: #111;
+  color: #2e0606;
+}
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+input {
+  margin-right: 10px;
+  padding: 5px;
+}
+
+button {
+  padding: 5px 10px;
+  margin: 5px 0;
+}
+
+ul {
+  margin-top: 10px;
+}

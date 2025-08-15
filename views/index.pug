@@ -3,6 +3,14 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+  div#login
+    h2 Login
+    input#name(type="text" placeholder="Enter name")
+    button#loginBtn Login
+
+  div#logout
+    button#logoutBtn Logout
+
   div.main-page
     a.back-button(href=`/articles`) Статті
     a.back-button(href=`/users`) Список користувачів

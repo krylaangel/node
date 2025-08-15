@@ -3,5 +3,12 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel="icon", href="/favicon.ico", type="image/x-icon")
+    script(src="/javascript/themeClick.js")
+    script(src="/javascript/jwt.js")
+
   body
+    div.theme
+      button(data-theme="light") Світла
+      button(data-theme="dark") Темна
     block content
