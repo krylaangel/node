@@ -5,23 +5,19 @@ const { users } = require("../data/users"); // твой файл с users
 
 const secretKey = "mySecretKey";
 
-// Логин
 router.post("/login", (req, res) => {
   const { name } = req.body;
 
-  // Находим пользователя по имени
   const user = users.find((u) => u.name === name);
 
   if (!user) {
     return res.status(401).json({ message: "User not found" });
   }
 
-  // Генерируем JWT
   const token = jwt.sign({ userId: user.id, name: user.name }, secretKey, {
     expiresIn: "1h",
   });
 
-  // Сохраняем токен в cookie
   res.cookie("token", token, {
     httpOnly: true,
     maxAge: 60 * 60 * 1000, // 1 час
@@ -31,7 +27,6 @@ router.post("/login", (req, res) => {
   res.json({ message: "Logged in successfully" });
 });
 
-// Логаут
 router.post("/logout", (req, res) => {
   res.clearCookie("token", { path: "/" });
   res.json({ message: "Logged out successfully" });
