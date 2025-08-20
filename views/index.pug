@@ -1,18 +1,27 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  div#login
-    h2 Login
-    input#name(type="text" placeholder="Enter name")
-    button#loginBtn Login
+  h1 Login Page
 
-  div#logout
-    button#logoutBtn Logout
+  //- JWT Login
+  div#jwt-login
+    h2 Login with JWT
+    form#jwtForm
+      input#jwtName(type="text" name="name" placeholder="Enter name")
+      button(type="submit") Login (JWT)
+
+  //- Passport Login
+  div#passport-login
+    h2 Login with Passport
+    form#passportForm
+      input#passportName(type="text" name="name" placeholder="Enter username")
+      input#passportPassword(type="password" name="password" placeholder="Enter password")
+      button(type="submit") Login (Passport)
+
+
+  div#messages
 
   div.main-page
     a.back-button(href=`/articles`) Статті
     a.back-button(href=`/users`) Список користувачів
-
 

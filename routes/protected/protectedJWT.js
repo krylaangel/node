@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const authenticateJWT = require("../routes/authMiddleware");
-const { users } = require("../data/users");
+const authenticateJWT = require("../middleware/authMiddleware");
+const { users } = require("../../data/users");
 
 router.get("/users", authenticateJWT, (req, res) => {
   res.json({ users });

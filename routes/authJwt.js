@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const { users } = require("../data/users"); // твой файл с users
+const { users } = require("../data/users");
 
 const secretKey = "mySecretKey";
 
+router.get("/login", (req, res) => {
+  res.render("auth_jwt/login");
+});
 router.post("/login", (req, res) => {
   const { name } = req.body;
 

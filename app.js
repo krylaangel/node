@@ -9,10 +9,16 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const articlesRouter = require("./routes/articles");
 const themeRouter = require("./routes/theme");
-const authRouter = require("./routes/auth");
-const protectedRouter = require("./routes/protected");
+const authRouter = require("./routes/authJwt");
+const protectedRouter = require("./routes/protected/protectedJWT");
 const chalk = require("chalk");
 const morgan = require("morgan");
+const session = require("express-session");
+const passport = require("./public/javascript/passport");
+const authPassport = require("./routes/authPassport");
+const protectedPassportRouter = require("./routes/protected/protectedPassport");
+const authenticateJWT = require("./routes/middleware/authMiddleware");
+
 const app = express();
 
 // view engine setup
@@ -40,20 +46,36 @@ app.use(
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 
-//routers
+app.use(
+  session({
+    secret: "mySecretKey",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { httpOnly: true, secure: false, maxAge: 60 * 60 * 1000 },
+  }),
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+// public routes
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/articles", articlesRouter);
 app.use("/theme", themeRouter);
-app.use("/auth", authRouter);
-app.use("/secure", protectedRouter);
+
+// auth routes
+app.use("/auth_jwt", authRouter);
+app.use("/auth_passport", authPassport);
+
+// protected routes
+app.use("/secure_jwt", authenticateJWT, protectedRouter);
+app.use("/secure_passport", protectedPassportRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
