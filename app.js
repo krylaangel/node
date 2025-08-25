@@ -4,7 +4,6 @@ const path = require("path");
 const favicon = require("serve-favicon");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-const debug = require("debug")("myapp:server");
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const articlesRouter = require("./routes/articles");

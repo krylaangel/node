@@ -3,6 +3,7 @@ extends layout
 block content
     li(class="card")
         h3= user.name
-        p Id: #{user.id}
+        p Id: #{user._id}
+        p email: #{user.email}
         p Вік: #{user.age}
         a.back-button(href="/users") Повернутись
