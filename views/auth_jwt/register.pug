@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+    h1 Реєстрація
+
+    form(action="/auth_jwt/register" method="POST")
+        div
+            label(for="name") Ім'я:
+            input#name(type="text" name="name" required placeholder="Введіть ім'я")
+        div
+            label(for="email") Email:
+            input#email(type="email" name="email" required placeholder="Введіть email")
+        div
+            label(for="password") Пароль:
+            input#password(type="password" name="password" required placeholder="Введіть пароль")
+        div
+            label(for="age") Вік:
+            input#age(type="number" name="age" placeholder="Вік")
+        div
+            label(for="hobbies") Хобі (через кому):
+            input#hobbies(type="text" name="hobbies" placeholder="Наприклад: читання, спорт")
+        button(type="submit") Зареєструватися
+
+    div
+        p Вже маєте акаунт?
+            a(href="/auth_jwt/login") Увійти

@@ -1,5 +1,6 @@
 const createError = require("http-errors");
 const express = require("express");
+const methodOverride = require("method-override");
 const path = require("path");
 const favicon = require("serve-favicon");
 const cookieParser = require("cookie-parser");
@@ -13,10 +14,8 @@ const protectedRouter = require("./routes/protected/protectedJWT");
 const chalk = require("chalk");
 const morgan = require("morgan");
 const session = require("express-session");
-const passport = require("./public/javascript/passport");
-const authPassport = require("./routes/authPassport");
-const protectedPassportRouter = require("./routes/protected/protectedPassport");
 const authenticateJWT = require("./routes/middleware/authMiddleware");
+const dashboardRouter = require("./routes/dashboard");
 
 const app = express();
 
@@ -48,6 +47,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method"));
 
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 
@@ -59,22 +59,19 @@ app.use(
     cookie: { httpOnly: true, secure: false, maxAge: 60 * 60 * 1000 },
   }),
 );
-app.use(passport.initialize());
-app.use(passport.session());
 
 // public routes
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/articles", articlesRouter);
 app.use("/theme", themeRouter);
+app.use("/dashboard", dashboardRouter);
 
 // auth routes
 app.use("/auth_jwt", authRouter);
-app.use("/auth_passport", authPassport);
 
 // protected routes
 app.use("/secure_jwt", authenticateJWT, protectedRouter);
-app.use("/secure_passport", protectedPassportRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

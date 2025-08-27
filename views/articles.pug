@@ -1,0 +1,20 @@
+extends layout
+
+block content
+    h1 Список статей
+
+    ul
+        each article in articles
+            li.card
+                strong= article.title
+                br
+                | Автор: #{article.author || 'Anonymous'}
+                br
+                | Дата: #{new Date(article.createdAt).toLocaleString()}
+                br
+                a.back-button(href=`/articles/${article._id}`) Детальніше
+                a.back-button(href=`/articles/edit/${article._id}`) Редагувати
+                form.back-button(action=`/articles/${article._id}?_method=DELETE` method="POST" onsubmit="return confirm('Видалити статтю?');")
+                    button(type="submit") Видалити
+
+

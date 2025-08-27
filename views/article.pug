@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    h1= article.title
+
+    p
+        | Автор: #{article.author || 'Anonymous'}
+        br
+        | Дата: #{new Date(article.createdAt).toLocaleString()}
+
+    hr
+    p= article.content
+
+    a.back-button(href="/articles") ← Назад до списку статей
