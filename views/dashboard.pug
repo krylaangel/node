@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    h1 Dashboard
+
+    if user
+
+        p Ви авторизовані як #{user.name} (роль: #{user.role})
+        form(action="/auth_jwt/logout" method="POST")
+            button(type="submit") Вийти
+        a.back-button(href="/articles/new") Додати статтю
+
+    else
+        p Ви не авторизовані
+        a(href="/auth_jwt/login") Увійти
+    div.main-page
+     a.back-button(href=`/articles`) Статті
+     a.back-button(href=`/users`) Список користувачів

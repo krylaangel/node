@@ -5,41 +5,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const jwtForm = document.getElementById("jwtForm");
   jwtForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const name = document.getElementById("jwtName").value;
+    const email = document.getElementById("jwtEmail").value;
+    const password = document.getElementById("jwtPassword").value;
 
     try {
       const res = await fetch("/auth_jwt/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-      messagesDiv.innerText = data.message;
+      if (res.redirected) {
+        window.location.href = res.url;
+      } else {
+        const data = await res.json();
+        messagesDiv.innerText = data.message;
+      }
     } catch (err) {
       messagesDiv.innerText = "Error logging in with JWT";
-      console.error(err);
-    }
-  });
-
-  // Passport login
-  const passportForm = document.getElementById("passportForm");
-  passportForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const username = document.getElementById("passportName").value;
-    const password = document.getElementById("passportPassword").value;
-
-    try {
-      const res = await fetch("/auth_passport/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await res.json();
-      messagesDiv.innerText = data.message;
-    } catch (err) {
-      messagesDiv.innerText = "Error logging in with Passport";
       console.error(err);
     }
   });

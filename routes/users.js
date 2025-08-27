@@ -32,5 +32,22 @@ router.get("/:id", async (req, res, next) => {
     res.status(500).send("Помилка при отриманні користувача");
   }
 });
-
+router.post("/", async (req, res) => {
+  try {
+    const db = await connectDB();
+    const newUser = {
+      name: req.body.name,
+      email: req.body.email,
+      age: req.body.age,
+      hobbies: req.body.hobbies || [],
+      password: req.body.password || "",
+      role: "user",
+    };
+    const user = await db.collection("users").insertOne(newUser);
+    res.json({ message: "user created successfully.", id: user.insertedId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
+  }
+});
 module.exports = router;

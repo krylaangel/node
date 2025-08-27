@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    h1 Редагувати статтю
+
+    if article
+        form(action=`/articles/${article._id}?_method=PUT` method="POST")
+            label(for="title") Заголовок:
+            input(type="text" name="title" value=article.title required)
+            br
+
+            label(for="content") Зміст:
+            textarea(name="content" required)= article.content
+            br
+
+            label(for="author") Автор:
+            input(type="text" name="author" value=article.author)
+            br
+
+            button(type="submit") Зберегти зміни
+    else
+        p Статтю не знайдено

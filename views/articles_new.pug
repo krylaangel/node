@@ -1,0 +1,20 @@
+extends layout
+
+block content
+    h1 Додати нову статтю
+
+    form(action="/articles" method="POST")
+        label(for="title") Заголовок:
+        input(type="text" id="title" name="title" required)
+        br
+
+        label(for="content") Зміст:
+        textarea(id="content" name="content" required)
+        br
+
+        label(for="author") Автор (можна пропустити):
+        input(type="text" id="author" name="author")
+        br
+
+        button(type="submit") Додати статтю
+
