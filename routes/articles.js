@@ -7,15 +7,41 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const db = await connectDB();
-    const articles = await db
+    const cursor = await db
       .collection("articles")
-      .find({}, { projection: { title: 1, author: 1, createdAt: 1 } })
-      .toArray();
-    console.log("Articles from DB:", articles);
+      .find({}, { projection: { title: 1, author: 1, createdAt: 1 } });
+
+    const articles = [];
+    for await (const article of cursor) {
+      articles.push(article);
+    }
     res.render("articles", { articles });
   } catch (err) {
     console.log(err);
     res.status(500).send("Помилка при отриманні публікацій");
+  }
+});
+
+router.get("/stats", async (req, res) => {
+  try {
+    const db = await connectDB();
+    const cursor = await db.collection("articles").aggregate([
+      {
+        $group: {
+          _id: "$author",
+          totalArticle: { $sum: 1 },
+        },
+      },
+      { $sort: { totalArticle: -1 } },
+    ]);
+    const stats = [];
+    for await (const stat of cursor) {
+      stats.push(stat);
+    }
+
+    res.render("stats", { stats });
+  } catch (err) {
+    console.log(err);
   }
 });
 
