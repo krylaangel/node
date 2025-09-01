@@ -20,6 +20,7 @@
     "mongodb": "^6.18.0",
     "mongoose": "^8.18.0",
     "morgan": "~1.9.1",
+    "node-fetch": "^3.3.2",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "pug": "3.0.3",
@@ -30,5 +31,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
 }
