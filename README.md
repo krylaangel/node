@@ -28,10 +28,22 @@
    MONGO_URI=<твій MongoDB URI>
    DB=<назва бази даних>
 
-4. Запустити сервер:
+4. 
+* Запустити сервер:
    ```bash
    npm start
    
+* Робота через докер:
+Створити файл .env з наступними змінними:
+  MONGO_URI=<ваш MongoDB URI>
+  DB=PsyBalance
+  JWT_SECRET=mySecretKey
+Запустити Docker-контейнери:
+  docker-compose up --build
+Перевірити, що сервер працює:
+Відкрити браузер: http://localhost:3000/dashboard
+Або відправити GET-запит через Postman: http://localhost:3000/users
+
 5. Відкрити в браузері:
 http://localhost:3000/articles
 http://localhost:3000/users
