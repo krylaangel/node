@@ -1,31 +1,21 @@
 const express = require("express");
-const connectDB = require("../connect");
-const { ObjectId } = require("mongodb");
 const authenticateJWT = require("./middleware/authMiddleware");
 const router = express.Router();
+const Article = require("../models/Article");
 
 router.get("/", async (req, res) => {
   try {
-    const db = await connectDB();
-    const cursor = await db
-      .collection("articles")
-      .find({}, { projection: { title: 1, author: 1, createdAt: 1 } });
-
-    const articles = [];
-    for await (const article of cursor) {
-      articles.push(article);
-    }
+    const articles = await Article.find({}, "title author createdAt").lean();
     res.render("articles", { articles });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).send("Помилка при отриманні публікацій");
   }
 });
 
 router.get("/stats", async (req, res) => {
   try {
-    const db = await connectDB();
-    const cursor = await db.collection("articles").aggregate([
+    const stats = await Article.aggregate([
       {
         $group: {
           _id: "$author",
@@ -34,11 +24,6 @@ router.get("/stats", async (req, res) => {
       },
       { $sort: { totalArticle: -1 } },
     ]);
-    const stats = [];
-    for await (const stat of cursor) {
-      stats.push(stat);
-    }
-
     res.render("stats", { stats });
   } catch (err) {
     console.log(err);
@@ -51,10 +36,7 @@ router.get("/new", authenticateJWT, (req, res) => {
 
 router.get("/edit/:id", authenticateJWT, async (req, res) => {
   try {
-    const db = await connectDB();
-    const article = await db
-      .collection("articles")
-      .findOne({ _id: new ObjectId(req.params.id) });
+    const article = await Article.findById(req.params.id).lean();
 
     if (!article) return res.status(404).send("Статтю не знайдено");
 
@@ -67,10 +49,7 @@ router.get("/edit/:id", authenticateJWT, async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const db = await connectDB();
-    const article = await db
-      .collection("articles")
-      .findOne({ _id: new ObjectId(req.params.id) });
+    const article = await Article.findById(req.params.id).lean();
     if (!article) {
       return res.status(404).send("Статтю не знайдено");
     }
@@ -83,15 +62,11 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", authenticateJWT, async (req, res) => {
   try {
-    const db = await connectDB();
-    const newArticle = {
+    const newArticle = await Article.create({
       title: req.body.title,
       content: req.body.content,
       author: req.body.author || "Anonymous",
-      createdBy: req.user.userId,
-      createdAt: new Date(),
-    };
-    await db.collection("articles").insertOne(newArticle);
+    });
     res.redirect("/articles");
   } catch (err) {
     console.log(err);
@@ -101,11 +76,8 @@ router.post("/", authenticateJWT, async (req, res) => {
 
 router.post("/many", authenticateJWT, async (req, res) => {
   try {
-    const db = await connectDB();
-    const article = await db
-      .collection("articles")
-      .insertMany(req.body.articles);
-    res.json({ message: "Статті додано", ids: article.insertedIds });
+    const articles = await Article.insertMany(req.body.articles);
+    res.json({ message: "Статті додано", ids: articles.map((a) => a._id) });
   } catch (err) {
     console.error(err);
     res.status(500).send("Помилка при додаванні статей");
@@ -115,11 +87,7 @@ router.post("/many", authenticateJWT, async (req, res) => {
 router.put("/:id", authenticateJWT, async (req, res) => {
   try {
     {
-      const db = await connectDB();
-      await db
-        .collection("articles")
-        .updateOne({ _id: new ObjectId(req.params.id) }, { $set: req.body });
-
+      await Article.findByIdAndUpdate(req.params.id, req.body, { new: true });
       res.redirect("/articles");
     }
   } catch (err) {
@@ -129,9 +97,8 @@ router.put("/:id", authenticateJWT, async (req, res) => {
 });
 router.put("/many", authenticateJWT, async (req, res) => {
   try {
-    const db = await connectDB();
     const { filter, update } = req.body;
-    await db.collection("articles").updateMany(filter, { $set: update });
+    await Article.updateMany(filter, { $set: update });
     res.redirect("/articles");
   } catch (err) {
     console.log(err);
@@ -140,10 +107,7 @@ router.put("/many", authenticateJWT, async (req, res) => {
 });
 router.put("/replace/:id", authenticateJWT, async (req, res) => {
   try {
-    const db = await connectDB();
-    const article = await db
-      .collection("articles")
-      .replaceOne({ _id: new ObjectId(req.params.id) }, req.body);
+    const article = await Article.replaceOne({ _id: req.params.id }, req.body);
     res.json({ message: "Статтю замінено", modified: article.modifiedCount });
   } catch (err) {
     console.log(err);
@@ -153,10 +117,7 @@ router.put("/replace/:id", authenticateJWT, async (req, res) => {
 
 router.delete("/:id", authenticateJWT, async (req, res) => {
   try {
-    const db = await connectDB();
-    await db
-      .collection("articles")
-      .deleteOne({ _id: new ObjectId(req.params.id) });
+    await Article.findByIdAndDelete(req.params.id);
     res.redirect("/articles");
   } catch (err) {
     console.error(err);
@@ -166,8 +127,7 @@ router.delete("/:id", authenticateJWT, async (req, res) => {
 
 router.delete("/", authenticateJWT, async (req, res) => {
   try {
-    const db = await connectDB();
-    await db.collection("articles").deleteMany(req.body.filter);
+    await Article.deleteMany(req.body.filter);
     res.redirect("/articles");
   } catch (err) {
     console.error(err);

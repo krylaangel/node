@@ -4,7 +4,6 @@ const methodOverride = require("method-override");
 const path = require("path");
 const favicon = require("serve-favicon");
 const cookieParser = require("cookie-parser");
-const logger = require("morgan");
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const articlesRouter = require("./routes/articles");
@@ -16,9 +15,17 @@ const morgan = require("morgan");
 const session = require("express-session");
 const authenticateJWT = require("./routes/middleware/authMiddleware");
 const dashboardRouter = require("./routes/dashboard");
-
+const connectDB = require("./connect");
 const app = express();
-
+(async () => {
+  try {
+    await connectDB();
+    console.log("✅ MongoDB connected successfully");
+  } catch (err) {
+    console.error("❌ DB connection failed:", err);
+    process.exit(1);
+  }
+})();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
@@ -42,7 +49,6 @@ app.use(
   }),
 );
 
-app.use(logger("dev"));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
