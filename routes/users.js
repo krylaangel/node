@@ -1,13 +1,11 @@
 const express = require("express");
-const connectDB = require("../connect");
-const { ObjectId } = require("mongodb");
 const router = express.Router();
+const User = require("../models/User");
 
 /* GET users listing. */
 router.get("/", async (req, res) => {
   try {
-    const db = await connectDB();
-    const users = await db.collection("users").find().toArray();
+    const users = await User.find();
     console.log("Users from DB:", users);
 
     res.render("users", { users });
@@ -18,10 +16,7 @@ router.get("/", async (req, res) => {
 });
 router.get("/:id", async (req, res, next) => {
   try {
-    const db = await connectDB();
-    const user = await db
-      .collection("users")
-      .findOne({ _id: new ObjectId(req.params.id) });
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).send("Користувач не знайдений");
     }
@@ -34,17 +29,16 @@ router.get("/:id", async (req, res, next) => {
 });
 router.post("/", async (req, res) => {
   try {
-    const db = await connectDB();
-    const newUser = {
+    const newUser = User.create({
       name: req.body.name,
       email: req.body.email,
       age: req.body.age,
       hobbies: req.body.hobbies || [],
       password: req.body.password || "",
       role: "user",
-    };
-    const user = await db.collection("users").insertOne(newUser);
-    res.json({ message: "user created successfully.", id: user.insertedId });
+    });
+    const user = await newUser.save();
+    res.json({ message: "user created successfully.", id: user._id });
   } catch (err) {
     console.error(err);
     res.status(500).send(err);

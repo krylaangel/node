@@ -1,4 +1,4 @@
-const { articles } = require("./data/articles");
+const { articles } = require("./temp/data/articles");
 const { response } = require("express");
 
 const LOGIN_CREDENTIALS = {

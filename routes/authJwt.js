@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const connectDB = require("../connect");
 const bcrypt = require("bcrypt");
 const authenticateJWT = require("./middleware/authMiddleware");
-
+const User = require("../models/User");
 const secretKey = process.env.JWT_SECRET;
 
 router.get("/login", (req, res) => {
@@ -13,14 +12,13 @@ router.get("/login", (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const db = await connectDB();
     const { email, password } = req.body;
     if (!email || !password) {
       return res
         .status(400)
         .json({ message: "Email and password are required" });
     }
-    const user = await db.collection("users").findOne({ email });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).json({ message: "User not found" });
@@ -51,9 +49,8 @@ router.post("/login", async (req, res) => {
 
 router.post("/api_login", async (req, res) => {
   try {
-    const db = await connectDB();
     const { email, password } = req.body;
-    const user = await db.collection("users").findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid email" });
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
@@ -84,9 +81,8 @@ router.get("/register", (req, res) => {
 });
 router.post("/register", async (req, res) => {
   try {
-    const db = await connectDB();
     const { name, email, password, age, hobbies } = req.body;
-    const existingUser = await db.collection("users").findOne({ email });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -96,16 +92,14 @@ router.post("/register", async (req, res) => {
         .json({ message: "Name, email and password are required" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = {
+    const user = await User.create({
       name,
       email,
       password: hashedPassword,
       age,
       hobbies: hobbies || [],
       role: "user",
-    };
-
-    const user = await db.collection("users").insertOne(newUser);
+    });
     res.redirect("/");
   } catch (err) {
     console.error(err);
