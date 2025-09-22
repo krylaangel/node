@@ -5,7 +5,7 @@ services:
     build: .
     container_name: express_app
     ports:
-      - "3000:3000"
+      - "8000:8000"
     environment:
       - MONGO_URI=${MONGO_URI}
       - DB=${DB}

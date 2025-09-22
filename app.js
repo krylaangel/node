@@ -1,3 +1,4 @@
+require("dotenv").config();
 const createError = require("http-errors");
 const express = require("express");
 const methodOverride = require("method-override");
@@ -5,17 +6,13 @@ const path = require("path");
 const favicon = require("serve-favicon");
 const cookieParser = require("cookie-parser");
 const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
-const articlesRouter = require("./routes/articles");
-const themeRouter = require("./routes/theme");
-const authRouter = require("./routes/authJwt");
-const protectedRouter = require("./routes/protected/protectedJWT");
+const authRouter = require("./routes/auth");
 const chalk = require("chalk");
 const morgan = require("morgan");
 const session = require("express-session");
-const authenticateJWT = require("./routes/middleware/authMiddleware");
-const dashboardRouter = require("./routes/dashboard");
 const connectDB = require("./connect");
+const cors = require("cors");
+
 const app = express();
 (async () => {
   try {
@@ -48,7 +45,12 @@ app.use(
     return [method, url, statusColor(status), responseTime].join(" ");
   }),
 );
-
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
@@ -68,16 +70,9 @@ app.use(
 
 // public routes
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/articles", articlesRouter);
-app.use("/theme", themeRouter);
-app.use("/dashboard", dashboardRouter);
 
 // auth routes
-app.use("/auth_jwt", authRouter);
-
-// protected routes
-app.use("/secure_jwt", authenticateJWT, protectedRouter);
+app.use("/api", authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

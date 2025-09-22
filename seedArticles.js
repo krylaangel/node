@@ -8,7 +8,7 @@ const LOGIN_CREDENTIALS = {
 
 async function getToken() {
   try {
-    const response = await fetch("http://localhost:3000/auth_jwt/api_login", {
+    const response = await fetch("http://localhost:8000/auth_jwt/api_login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(LOGIN_CREDENTIALS),
@@ -22,7 +22,7 @@ async function getToken() {
 async function seedArticles() {
   try {
     const token = await getToken();
-    const response = await fetch("http://localhost:3000/articles/many", {
+    const response = await fetch("http://localhost:8000/articles/many", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
