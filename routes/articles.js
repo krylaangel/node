@@ -62,7 +62,7 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", authenticateJWT, async (req, res) => {
   try {
-    const newArticle = await Article.create({
+    await Article.create({
       title: req.body.title,
       content: req.body.content,
       author: req.body.author || "Anonymous",
