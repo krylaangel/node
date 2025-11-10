@@ -33,6 +33,7 @@ exports.login = async (req, res) => {
         name: user.name,
         surname: user.surname,
         email: user.email,
+        birthYear: user.birthYear,
       },
       secretKey,
       {
@@ -54,6 +55,7 @@ exports.login = async (req, res) => {
         surname: user.surname,
         email: user.email,
         role: user.role,
+        birthYear: user.birthYear,
       },
     });
   } catch (err) {

@@ -7,6 +7,8 @@ const favicon = require("serve-favicon");
 const cookieParser = require("cookie-parser");
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
+const articlesRouter = require("./routes/articles");
+
 const chalk = require("chalk");
 const morgan = require("morgan");
 const session = require("express-session");
@@ -73,6 +75,9 @@ app.use("/", indexRouter);
 
 // auth routes
 app.use("/api", authRouter);
+
+// articles routes
+app.use("/api", articlesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
