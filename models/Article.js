@@ -6,6 +6,11 @@ const articleSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    category: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     content: {
       type: String,
       required: true,
@@ -15,6 +20,11 @@ const articleSchema = new mongoose.Schema(
       trim: true,
       required: true,
       default: "Anonymous",
+    },
+    authorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     tags: {
       type: [String],
